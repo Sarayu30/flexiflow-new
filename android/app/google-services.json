@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1097181126220",
+    "project_id": "flexiflow-9be51",
+    "storage_bucket": "flexiflow-9be51.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1097181126220:android:3ccb9d4239b86915eddee9",
+        "android_client_info": {
+          "package_name": "com.example.flexi_flow"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAhhdPCGldn2rEk6hmvSHuS2V4tY1l9o0w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
