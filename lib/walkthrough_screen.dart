@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'auth_screen.dart';
-import 'admin_dashboard.dart'; // Add this import
+import 'admin_dashboard.dart';
 
 class WalkthroughScreen extends StatefulWidget {
   final VoidCallback toggleTheme;
@@ -38,7 +38,6 @@ class _WalkthroughScreenState extends State<WalkthroughScreen> {
     },
   ];
 
-  // Show admin login dialog
   void _showAdminLoginDialog() {
     final TextEditingController usernameController = TextEditingController();
     final TextEditingController passwordController = TextEditingController();
@@ -46,24 +45,30 @@ class _WalkthroughScreenState extends State<WalkthroughScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Admin Login'),
+        title: const Text('Admin Login', style: TextStyle(fontWeight: FontWeight.bold)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             TextField(
               controller: usernameController,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Username',
-                border: OutlineInputBorder(),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12.0),
+                ),
+                prefixIcon: const Icon(Icons.person),
               ),
             ),
             const SizedBox(height: 16),
             TextField(
               controller: passwordController,
               obscureText: true,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Password',
-                border: OutlineInputBorder(),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12.0),
+                ),
+                prefixIcon: const Icon(Icons.lock),
               ),
             ),
           ],
@@ -71,9 +76,16 @@ class _WalkthroughScreenState extends State<WalkthroughScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+            child: const Text('Cancel', style: TextStyle(color: Colors.deepPurple)),
           ),
           ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.deepPurple,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.0),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            ),
             onPressed: () {
               if (usernameController.text == _adminUsername &&
                   passwordController.text == _adminPassword) {
@@ -98,125 +110,164 @@ class _WalkthroughScreenState extends State<WalkthroughScreen> {
                 );
               }
             },
-            child: const Text('Login'),
+            child: const Text('Login', style: TextStyle(color: Colors.white)),
           ),
         ],
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.0),
+        ),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Walkthrough'),
+        title: const Text('Arthritis Care', style: TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: Colors.deepPurple,
+        centerTitle: true,
         actions: [
-          // Admin button
           IconButton(
-            icon: const Icon(Icons.admin_panel_settings),
+            icon: const Icon(Icons.admin_panel_settings, size: 28),
             onPressed: _showAdminLoginDialog,
             tooltip: 'Admin Login',
           ),
-          // Theme toggle button
           IconButton(
-            icon: const Icon(Icons.brightness_6),
+            icon: const Icon(Icons.brightness_6, size: 28),
             onPressed: widget.toggleTheme,
             tooltip: 'Toggle Theme',
           ),
         ],
       ),
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: Column(
-        children: [
-          Expanded(
-            child: PageView.builder(
-              controller: _pageController,
-              itemCount: walkthroughItems.length,
-              onPageChanged: (index) {
-                setState(() => _currentIndex = index);
-              },
-              itemBuilder: (context, index) {
-                final item = walkthroughItems[index];
-                return SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                  child: Column(
+      body: SizedBox(
+        height: screenHeight,
+        width: screenWidth,
+        child: Column(
+          children: [
+            // Animation takes 50% of screen height
+            SizedBox(
+              height: screenHeight * 0.5,
+              child: PageView.builder(
+                controller: _pageController,
+                itemCount: walkthroughItems.length,
+                onPageChanged: (index) {
+                  setState(() => _currentIndex = index);
+                },
+                itemBuilder: (context, index) {
+                  final item = walkthroughItems[index];
+                  return Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const SizedBox(height: 20),
                       Lottie.asset(
                         item["animation"]!,
-                        height: 420, // Increased from 300 to 420 (40% increase)
-                        width: 420,  // Increased from 300 to 420 (40% increase)
+                        height: screenHeight * 0.4, // 40% of screen height
+                        width: screenWidth * 0.9,   // 90% of screen width
                         fit: BoxFit.contain,
                       ),
-                      const SizedBox(height: 40),
-                      Text(
-                        item["title"]!,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).textTheme.titleLarge?.color,
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      Text(
-                        item["description"]!,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: Theme.of(context).textTheme.bodyLarge?.color,
-                        ),
-                      ),
-                      const SizedBox(height: 20),
                     ],
+                  );
+                },
+              ),
+            ),
+
+            // Content area takes remaining space
+            Expanded(
+              child: PageView.builder(
+                controller: _pageController,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: walkthroughItems.length,
+                itemBuilder: (context, index) {
+                  final item = walkthroughItems[index];
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 20),
+                        Text(
+                          item["title"]!,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).textTheme.titleLarge?.color,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        Text(
+                          item["description"]!,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Theme.of(context).textTheme.bodyLarge?.color,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+
+            // Page indicator and button
+            Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(
+                    walkthroughItems.length,
+                    (index) => AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      margin: const EdgeInsets.symmetric(horizontal: 6.0),
+                      width: _currentIndex == index ? 24.0 : 10.0,
+                      height: 10.0,
+                      decoration: BoxDecoration(
+                        color: _currentIndex == index ? Colors.deepPurple : Colors.grey,
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                    ),
                   ),
-                );
-              },
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(
-              walkthroughItems.length,
-              (index) => AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                margin: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 20),
-                width: _currentIndex == index ? 20 : 8,
-                height: 8,
-                decoration: BoxDecoration(
-                  color: _currentIndex == index ? Colors.deepPurple : Colors.grey,
-                  borderRadius: BorderRadius.circular(5),
                 ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.deepPurple,
-                minimumSize: const Size(200, 50),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => AuthScreen(toggleTheme: widget.toggleTheme),
+                const SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 40.0),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.deepPurple,
+                      minimumSize: Size(screenWidth * 0.1, 40),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                    ),
+                    onPressed: () {
+                      if (_currentIndex == walkthroughItems.length - 1) {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AuthScreen(toggleTheme: widget.toggleTheme),
+                          ),
+                        );
+                      } else {
+                        _pageController.nextPage(
+                          duration: const Duration(milliseconds: 500),
+                          curve: Curves.easeInOut,
+                        );
+                      }
+                    },
+                    child: Text(
+                      _currentIndex == walkthroughItems.length - 1 ? "Get Started" : "Next",
+                      style: const TextStyle(color: Colors.white, fontSize: 14),
+                    ),
                   ),
-                );
-              },
-              child: Text(
-                _currentIndex == walkthroughItems.length - 1 ? "Get Started" : "Skip",
-                style: const TextStyle(color: Colors.white),
-              ),
+                ),
+              ],
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

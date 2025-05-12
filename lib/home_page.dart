@@ -44,22 +44,22 @@ class _HomePageState extends State<HomePage> {
   final List<String> _morningGreetings = [
     'Rise and shine! 🌞',
     'Good morning! ☀️',
-    'Morning glory! 🌄',
-    'Hello early bird! 🐦'
+    'Morning glory! ',
+    'Hello early bird! '
   ];
 
   final List<String> _afternoonGreetings = [
-    'Hello there! 👋',
-    'Good afternoon! 🌤',
+    'Hello there! ',
+    'Good afternoon! ',
     'Hope you\'re having a great day! 😊',
-    'Afternoon vibes! 🌿'
+    'Afternoon vibes! '
   ];
 
   final List<String> _eveningGreetings = [
-    'Good evening! 🌙',
-    'Hello night owl! 🦉',
-    'Evening serenity! 🌅',
-    'Welcome to the evening! ✨'
+    'Good evening! ',
+    'Hello night owl! ',
+    'Evening serenity! ',
+    'Welcome to the evening! '
   ];
 
   final List<String> _motivationalQuotes = [
