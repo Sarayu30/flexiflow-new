@@ -119,8 +119,6 @@ class _ExerciseRecommendPageState extends State<ExerciseRecommendPage> {
   }
 
   void _showFeedbackDialog(BuildContext context, dynamic exercise) {
-    double rating = 3;
-
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.white,
@@ -128,51 +126,11 @@ class _ExerciseRecommendPageState extends State<ExerciseRecommendPage> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (BuildContext context) {
-        return Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                "Rate ${exercise["name"]}",
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 20),
-              Slider(
-                value: rating,
-                min: 1,
-                max: 5,
-                divisions: 4,
-                activeColor: Colors.deepPurple,
-                onChanged: (value) {
-                  setState(() {
-                    rating = value;
-                  });
-                },
-              ),
-              const SizedBox(height: 20),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.deepPurple,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                  ),
-                  onPressed: () {
-                    _submitFeedback(exercise["id"], rating);
-                    Navigator.pop(context);
-                  },
-                  child: const Text(
-                    "Submit Feedback",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-              ),
-            ],
-          ),
+        return _FeedbackDialogContent(
+          exercise: exercise,
+          onSubmit: (rating) {
+            _submitFeedback(exercise["id"], rating);
+          },
         );
       },
     );
@@ -192,21 +150,20 @@ class _ExerciseRecommendPageState extends State<ExerciseRecommendPage> {
       ),
       body: Stack(
         children: [
-          // Background Animation - Positioned to be visible but not overwhelming
-          // Replace the Positioned widget for the animation with this:
-Positioned.fill(
-  child: Center(
-    child: SizedBox(
-      width: MediaQuery.of(context).size.width * 0.8,
-      height: MediaQuery.of(context).size.height * 0.5,
-      child: Lottie.asset(
-        'animations/recommendation.json',
-        fit: BoxFit.contain,
-        alignment: Alignment.center,
-      ),
-    ),
-  ),
-),
+          // Background Animation
+          Positioned.fill(
+            child: Center(
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width * 0.8,
+                height: MediaQuery.of(context).size.height * 0.5,
+                child: Lottie.asset(
+                  'animations/recommendation.json',
+                  fit: BoxFit.contain,
+                  alignment: Alignment.center,
+                ),
+              ),
+            ),
+          ),
 
           // Semi-transparent overlay for better text visibility
           Positioned.fill(
@@ -379,29 +336,29 @@ Positioned.fill(
                           ),
                           const SizedBox(height: 10),
                           ...recommendations.map((ex) => Column(
-                                children: [
-                                  const Divider(),
-                                  ListTile(
-                                    title: Text(
-                                      ex["name"],
-                                      style: const TextStyle(fontWeight: FontWeight.bold),
-                                    ),
-                                    subtitle: ex["tags"] != null ? Text(ex["tags"]) : null,
-                                    trailing: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.deepPurple,
-                                      ),
-                                      onPressed: () {
-                                        _showFeedbackDialog(context, ex);
-                                      },
-                                      child: const Text(
-                                        "Done",
-                                        style: TextStyle(color: Colors.white),
-                                      ),
-                                    ),
+                            children: [
+                              const Divider(),
+                              ListTile(
+                                title: Text(
+                                  ex["name"],
+                                  style: const TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                subtitle: ex["tags"] != null ? Text(ex["tags"]) : null,
+                                trailing: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.deepPurple,
                                   ),
-                                ],
-                              )),
+                                  onPressed: () {
+                                    _showFeedbackDialog(context, ex);
+                                  },
+                                  child: const Text(
+                                    "Done",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )),
                         ],
                       ),
                     ),
@@ -422,5 +379,76 @@ Positioned.fill(
   void dispose() {
     _scrollController.dispose();
     super.dispose();
+  }
+}
+
+class _FeedbackDialogContent extends StatefulWidget {
+  final dynamic exercise;
+  final Function(double) onSubmit;
+
+  const _FeedbackDialogContent({
+    required this.exercise,
+    required this.onSubmit,
+  });
+
+  @override
+  State<_FeedbackDialogContent> createState() => _FeedbackDialogContentState();
+}
+
+class _FeedbackDialogContentState extends State<_FeedbackDialogContent> {
+  double rating = 3;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            "Rate ${widget.exercise["name"]}",
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 20),
+          Slider(
+            value: rating,
+            min: 1,
+            max: 5,
+            divisions: 4,
+            activeColor: Colors.deepPurple,
+            onChanged: (value) {
+              setState(() {
+                rating = value;
+              });
+            },
+          ),
+          Text(
+            "Rating: ${rating.toStringAsFixed(1)}",
+            style: const TextStyle(fontSize: 16),
+          ),
+          const SizedBox(height: 20),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.deepPurple,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+              ),
+              onPressed: () {
+                widget.onSubmit(rating);
+                Navigator.pop(context);
+              },
+              child: const Text(
+                "Submit Feedback",
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

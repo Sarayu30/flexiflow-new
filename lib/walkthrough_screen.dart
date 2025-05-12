@@ -148,9 +148,8 @@ class _WalkthroughScreenState extends State<WalkthroughScreen> {
         width: screenWidth,
         child: Column(
           children: [
-            // Animation takes 50% of screen height
-            SizedBox(
-              height: screenHeight * 0.5,
+            // Animation and content in a single PageView
+            Expanded(
               child: PageView.builder(
                 controller: _pageController,
                 itemCount: walkthroughItems.length,
@@ -160,54 +159,49 @@ class _WalkthroughScreenState extends State<WalkthroughScreen> {
                 itemBuilder: (context, index) {
                   final item = walkthroughItems[index];
                   return Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Lottie.asset(
-                        item["animation"]!,
-                        height: screenHeight * 0.4, // 40% of screen height
-                        width: screenWidth * 0.9,   // 90% of screen width
-                        fit: BoxFit.contain,
+                      // Animation takes 50% of screen height
+                      SizedBox(
+                        height: screenHeight * 0.5,
+                        child: Lottie.asset(
+                          item["animation"]!,
+                          height: screenHeight * 0.4,
+                          width: screenWidth * 0.7,
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                      
+                      // Content area takes remaining space
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              const SizedBox(height: 20),
+                              Text(
+                                item["title"]!,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.bold,
+                                  color: Theme.of(context).textTheme.titleLarge?.color,
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                              Text(
+                                item["description"]!,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: Theme.of(context).textTheme.bodyLarge?.color,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ],
-                  );
-                },
-              ),
-            ),
-
-            // Content area takes remaining space
-            Expanded(
-              child: PageView.builder(
-                controller: _pageController,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: walkthroughItems.length,
-                itemBuilder: (context, index) {
-                  final item = walkthroughItems[index];
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 20),
-                        Text(
-                          item["title"]!,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).textTheme.titleLarge?.color,
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        Text(
-                          item["description"]!,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Theme.of(context).textTheme.bodyLarge?.color,
-                          ),
-                        ),
-                      ],
-                    ),
                   );
                 },
               ),
@@ -235,32 +229,35 @@ class _WalkthroughScreenState extends State<WalkthroughScreen> {
                 const SizedBox(height: 20),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 40.0),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.deepPurple,
-                      minimumSize: Size(screenWidth * 0.1, 40),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.0),
+                  child: SizedBox(
+                    width: screenWidth * 0.1,  // Reduced from 0.8 to 0.6
+                    height: 45,  // Reduced from 50 to 45
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.deepPurple,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
                       ),
-                    ),
-                    onPressed: () {
-                      if (_currentIndex == walkthroughItems.length - 1) {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => AuthScreen(toggleTheme: widget.toggleTheme),
-                          ),
-                        );
-                      } else {
-                        _pageController.nextPage(
-                          duration: const Duration(milliseconds: 500),
-                          curve: Curves.easeInOut,
-                        );
-                      }
-                    },
-                    child: Text(
-                      _currentIndex == walkthroughItems.length - 1 ? "Get Started" : "Next",
-                      style: const TextStyle(color: Colors.white, fontSize: 14),
+                      onPressed: () {
+                        if (_currentIndex < walkthroughItems.length - 1) {
+                          _pageController.nextPage(
+                            duration: const Duration(milliseconds: 500),
+                            curve: Curves.easeInOut,
+                          );
+                        } else {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => AuthScreen(toggleTheme: widget.toggleTheme),
+                            ),
+                          );
+                        }
+                      },
+                      child: Text(
+                        _currentIndex == walkthroughItems.length - 1 ? "Get Started" : "Next",
+                        style: const TextStyle(color: Colors.white, fontSize: 16),
+                      ),
                     ),
                   ),
                 ),
