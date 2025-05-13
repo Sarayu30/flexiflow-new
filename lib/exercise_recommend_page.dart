@@ -143,10 +143,14 @@ class _ExerciseRecommendPageState extends State<ExerciseRecommendPage> {
       appBar: AppBar(
         title: const Text(
           "Exercise Recommendations",
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(
+            color: Colors.white, // White text for contrast
+            fontWeight: FontWeight.bold,
+          ),
         ),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
+        backgroundColor: Colors.deepPurple, // Theme color background
+        elevation: 4, // Added slight elevation
+        centerTitle: true, // Center the title
       ),
       body: Stack(
         children: [
@@ -204,9 +208,9 @@ class _ExerciseRecommendPageState extends State<ExerciseRecommendPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Text(
-                            "Personalized Exercise Recommendations",
+                            " ",
                             style: TextStyle(
-                              fontSize: 20,
+                              fontSize: 25,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -330,7 +334,7 @@ class _ExerciseRecommendPageState extends State<ExerciseRecommendPage> {
                           const Text(
                             "Recommended Exercises",
                             style: TextStyle(
-                              fontSize: 20,
+                              fontSize: 25,
                               fontWeight: FontWeight.bold,
                             ),
                           ),

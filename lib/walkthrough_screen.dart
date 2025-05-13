@@ -127,7 +127,7 @@ class _WalkthroughScreenState extends State<WalkthroughScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Flexi Flow', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text('FlexiFlow', style: TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: Colors.deepPurple,
         centerTitle: true,
         actions: [

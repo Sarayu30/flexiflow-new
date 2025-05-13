@@ -495,7 +495,7 @@ class _ForumTabState extends State<ForumTab> with SingleTickerProviderStateMixin
                   "Posted: ${postedAt.toLocal().toString().substring(0, 16)}",
                   style: TextStyle(
                     fontSize: 12,
-                    color: Colors.grey[600],
+                    color: const Color.fromARGB(255, 241, 232, 232),
                   ),
                 ),
               ],

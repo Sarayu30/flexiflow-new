@@ -72,7 +72,7 @@ class _FlexiFlowAppState extends State<FlexiFlowApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flexi Flow',
+      title: 'FlexiFlow',
       debugShowCheckedModeBanner: false,
       theme: isDarkMode
           ? ThemeData.dark().copyWith(scaffoldBackgroundColor: Colors.black)
